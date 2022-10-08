@@ -1,0 +1,81 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper, margin={0.5in}]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+% \usepackage{makeidx}
+% \usepackage{cancel}
+% \usepackage{hyperref}
+% \usepackage{graphicx}
+% \usepackage{xcolor}
+% \author{Ахмад Ибрахим M3139}
+% \title{Неделя 1}
+
+\begin{document}
+\begin{center}
+\large Лабораторная 1 \\
+\normalsize Вариант 1 (Задание 1)\\
+\normalsize Вариант 3 (Задание 2)\\
+\normalsize Ибрахим Ахмад M33391 \\
+\end{center}
+%\maketitle
+%\pagebreak
+% \center
+%\section{}
+\section*{Задание 1}
+\par $X_{1} \ldots X_{n} \sim Bern(p)$, нужно найти минимальное $n$, при котором
+$P(|EX_{1}-\overline{X}| \geq \epsilon) \leq \delta$, где $\epsilon=0.1$ и
+$\delta=0.05$.
+
+\par Вспомним условия ЦПТ:
+\par $\{Y_{n}\}$~--- i.i.d., $EY_{i}=\mu<\infty$, $DY_{i}=\sigma^2<\infty$;
+    $Z_{n}=\frac{S_{n}-n\mu}{\sigma \sqrt{n}}$, $Z \sim N(0,1)$.
+    Тогда $Z_{n} \xrightarrow{d} Z$
+
+\par Попытаемся преобразовать $P(|EX_{1}-\overline{X}| \leq x)$ так, чтобы можно
+было выразить это в терминах ЦПТ. Положим $Y_{i}=X_{i}$ в условии теоремы.
+$$P(|\underbrace{EX_{1}}_{\mu}-\underbrace{\overline{X}}_{S_{n}/n}| \leq x)
+  =P(|n\mu-S_{n}| \leq nx)
+  =P\left(\left|\frac{n\mu-S_{n}}{\sigma \sqrt{n}}\right| \leq \frac{x
+      \sqrt{n}}{\sigma}\right)$$
+$$=F_{Z_n}\left(\frac{x \sqrt{n}}{\sigma}\right)-F_{Z_n}\left(-\frac{x \sqrt{n}}{\sigma}\right)$$
+$$\approx \Phi\left(\frac{x \sqrt{n}}{\sigma}\right) - \Phi\left(-\frac{x \sqrt{n}}{\sigma}\right)$$
+$$=2\Phi\left(\frac{x \sqrt{n}}{\sigma}\right) - 1$$
+
+Отлично, теперь выразим через это приближение исходное условие:
+$$P(|EX_{1}-\overline{X}| \geq \epsilon) \leq \delta$$
+$$1 - P(|EX_{1}-\overline{X}| \leq \epsilon) \leq \delta$$
+$$P(|EX_{1}-\overline{X}| \leq \epsilon) \geq 1 - \delta$$
+$$2\Phi\left(\frac{\epsilon \sqrt{n}}{\sigma}\right) - 1 \geq 1 - \delta$$
+$$\Phi\left(\frac{\epsilon \sqrt{n}}{\sigma}\right) \geq 1 - \delta/2$$
+По строгому возрастанию  $\Phi$, можем применить $\Phi^{-1}$ к неравенству:
+$$\frac{\epsilon \sqrt{n}}{\sigma} \geq \Phi^{-1}\left(1 - \delta/2\right)$$
+$$\sqrt{n} \geq \frac{\sigma}{\epsilon} \Phi^{-1}\left(1 - \delta/2\right)$$
+$$n \geq \left(\frac{\sigma}{\epsilon} \Phi^{-1}\left(1 - \delta/2\right)\right)^2$$
+Т.к. мы пытаемся найти наименьшее натуральное $n$, то можно явно выразить его из
+неравенства выше:
+$$n = \left\lceil\left(\frac{\sigma}{\epsilon} \Phi^{-1}\left(1 -
+    \delta/2\right)\right)^2\right\rceil$$
+Вспомним, что $\mu=p$, $\sigma^2=p-p^2$ и подставим в формулу $p=0.4$,
+$\epsilon=0.1$ и $\delta=0.05$:
+\begin{verbatim}
+>>> from scipy.stats import norm
+>>> p = 0.4
+>>> eps = 0.1
+>>> delta = 0.05
+>>> mu = p
+>>> sigma = math.sqrt(p - p*p)
+>>> n = ((sigma/eps)*norm.ppf(1 - delta/2))**2
+>>> print(n)
+92.195011696659
+\end{verbatim}
+
+$$n=\lceil 92.195011696659 \rceil=93$$
+Ответ: 93.
+
+\section*{Задание 2}
+Решение описано в \texttt{task-2.ipynb}
+\end{document}
+
